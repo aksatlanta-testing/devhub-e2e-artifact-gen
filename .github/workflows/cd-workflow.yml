@@ -5,6 +5,12 @@ on:
     branches: ["main"]
 
 jobs:
+  qa-placeholder:
+    name: qa
+    needs: [dev-placeholder]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "running qa stage"
   dev-placeholder:
     name: dev
     needs: []
@@ -17,9 +23,3 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - run: echo "running prod stage"
-  qa-placeholder:
-    name: qa
-    needs: [dev-placeholder]
-    runs-on: ubuntu-latest
-    steps:
-      - run: echo "running qa stage"
