@@ -1,0 +1,25 @@
+name: Terraform apply infra change - e2e-IacProfile-1b93f88f-4a82-48b6-92ac-fd1ff85a8bbc
+
+on:
+  push:
+    branches: ["main"]
+
+jobs:
+  QA-placeholder:
+    name: QA
+    needs: [dev-placeholder]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "running QA stage"
+  dev-placeholder:
+    name: dev
+    needs: []
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "running dev stage"
+  Prod-placeholder:
+    name: Prod
+    needs: [QA-placeholder]
+    runs-on: ubuntu-latest
+    steps:
+      - run: echo "running Prod stage"
