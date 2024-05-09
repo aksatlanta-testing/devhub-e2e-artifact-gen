@@ -1,0 +1,60 @@
+name: e2e-helm-workflow-9af74828-3211-408f-842f-56db49de3dc7
+"on":
+    push:
+        branches:
+            - devhub-e2e-test-id-1
+    workflow_dispatch: {}
+env:
+    ACR_RESOURCE_GROUP: aksatlanta-testing-devhub-e2e-artifact-gen-dhe2e
+    AZURE_CONTAINER_REGISTRY: devhube2e060d6f00091544a4a8343706425104ac
+    CHART_OVERRIDE_PATH: charts/values.yaml
+    CHART_OVERRIDES: image.repository=devhube2e060d6f00091544a4a8343706425104ac.azurecr.io/helmimage,image.tag=${{ github.sha }}
+    CHART_PATH: charts
+    CLUSTER_NAME: aksatlanta-testingdevhub-e2e-artifact-gendhe2e
+    CLUSTER_RESOURCE_GROUP: aksatlanta-testing-devhub-e2e-artifact-gen-dhe2e
+    CONTAINER_NAME: helmimage
+jobs:
+    buildImage:
+        permissions:
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v3
+            - uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+              name: Azure login
+              with:
+                client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            - name: Build and push image to ACR
+              run: az acr build --image ${{ env.CONTAINER_NAME }}:${{ github.sha }} --registry ${{ env.AZURE_CONTAINER_REGISTRY }} -g ${{ env.ACR_RESOURCE_GROUP }} -f Dockerfile ./
+    deploy:
+        permissions:
+            actions: read
+            contents: read
+            id-token: write
+        runs-on: ubuntu-latest
+        needs:
+            - buildImage
+        steps:
+            - uses: actions/checkout@v3
+            - uses: azure/login@92a5484dfaf04ca78a94597f4f19fea633851fa2
+              name: Azure login
+              with:
+                client-id: ${{ secrets.AZURE_CLIENT_ID }}
+                subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+                tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+            - uses: azure/use-kubelogin@v1
+              name: Set up kubelogin for non-interactive login
+              with:
+                kubelogin-version: v0.0.25
+            - uses: azure/aks-set-context@v3
+              name: Get K8s context
+              with:
+                admin: "false"
+                cluster-name: ${{ env.CLUSTER_NAME }}
+                resource-group: ${{ env.CLUSTER_RESOURCE_GROUP }}
+                use-kubelogin: "true"
+            - name: Deploy application
+              run: helm upgrade --wait -i -f ${{ env.CHART_OVERRIDE_PATH }} --set ${{ env.CHART_OVERRIDES }} go-echobad2555e-fb5a-4b1b-81b9-f86226db1108 ${{ env.CHART_PATH }}
