@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: go-echo
+  labels:
+    app: go-echo
+    kubernetes.azure.com/generator: devhub
+  namespace: devhub-e2e-test-id-8
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: go-echo
+  template:
+    metadata:
+      labels:
+        app: go-echo
+    spec:
+      containers:
+        - name: go-echo
+          image: devhube2eac1be2c38cd841e9afed9d064f47f84a.azurecr.io/kubeimage:latest:latest
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 1323
