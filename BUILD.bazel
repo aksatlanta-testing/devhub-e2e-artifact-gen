@@ -1,0 +1,13 @@
+filegroup(
+    name = "profilefiles-tar-files",
+    srcs = glob(
+        [
+            "**",
+        ],
+        exclude = [
+            "BUILD.bazel",
+            "owners.txt",
+        ],
+    ),
+    visibility = ["//visibility:public"],
+)
