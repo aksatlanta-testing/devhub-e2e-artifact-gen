@@ -1,0 +1,19 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ include "go-echo9607dc74-b3d4-4bb1-a18e-bb2dae8756de.fullname" . }}
+  labels:
+    {{- include "go-echo9607dc74-b3d4-4bb1-a18e-bb2dae8756de.labels" . | nindent 4 }}
+    kubernetes.azure.com/generator: {{.Values.generatorLabel}}
+  annotations:
+    {{ toYaml .Values.service.annotations | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+spec:
+  type: {{ .Values.service.type }}
+  ports:
+    - port: {{ .Values.service.port }}
+      targetPort: {{ .Values.containerPort }}
+      protocol: TCP
+      name: svchttp
+  selector:
+    {{- include "go-echo9607dc74-b3d4-4bb1-a18e-bb2dae8756de.selectorLabels" . | nindent 6 }}
