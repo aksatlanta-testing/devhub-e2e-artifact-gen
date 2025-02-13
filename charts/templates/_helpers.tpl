@@ -1,0 +1,40 @@
+
+{{- define "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+
+{{- define "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+
+{{- define "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+
+{{- define "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.labels" -}}
+helm.sh/chart: {{ include "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.chart" . }}
+{{ include "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.selectorLabels" . }}
+kubernetes.azure.com/generator: {{ .Values.generatorLabel }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+
+{{- define "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "go-echoa6c5aae5-7fb0-4494-94a6-bd903bd8244a.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
