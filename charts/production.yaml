@@ -1,0 +1,8 @@
+image:
+  repository: "go-echo0293e4b9-da16-4125-8626-8b69c50ac719"
+  pullPolicy: Always
+  tag: "latest"
+service:
+  annotations: {}
+  type: LoadBalancer
+  port: "1323"
