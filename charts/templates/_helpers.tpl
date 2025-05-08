@@ -1,0 +1,40 @@
+
+{{- define "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.name" -}}
+{{- default .Chart.Name .Values.nameOverride | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+
+{{- define "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.fullname" -}}
+{{- if .Values.fullnameOverride }}
+{{- .Values.fullnameOverride | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- $name := default .Chart.Name .Values.nameOverride }}
+{{- if contains $name .Release.Name }}
+{{- .Release.Name | trunc 63 | trimSuffix "-" }}
+{{- else }}
+{{- printf "%s-%s" .Release.Name $name | trunc 63 | trimSuffix "-" }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+
+{{- define "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.chart" -}}
+{{- printf "%s-%s" .Chart.Name .Chart.Version | replace "+" "_" | trunc 63 | trimSuffix "-" }}
+{{- end }}
+
+
+{{- define "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.labels" -}}
+helm.sh/chart: {{ include "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.chart" . }}
+{{ include "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.selectorLabels" . }}
+kubernetes.azure.com/generator: {{ .Values.generatorLabel }}
+{{- if .Chart.AppVersion }}
+app.kubernetes.io/version: {{ .Chart.AppVersion | quote }}
+{{- end }}
+app.kubernetes.io/managed-by: {{ .Release.Service }}
+{{- end }}
+
+
+{{- define "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.selectorLabels" -}}
+app.kubernetes.io/name: {{ include "go-echoe6640621-c6fd-47c2-8107-92a4ffdac7ee.name" . }}
+app.kubernetes.io/instance: {{ .Release.Name }}
+{{- end }}
