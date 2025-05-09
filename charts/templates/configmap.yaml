@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ include "go-echobb0142ee-9ff6-4498-8747-658fc181f4fe.fullname" . }}-config
+  labels:
+    {{- include "go-echobb0142ee-9ff6-4498-8747-658fc181f4fe.labels" . | nindent 4 }}
+  namespace: {{ .Values.namespace }}
+data:
+{{- range $key, $value := .Values.envVars }}
+  {{ $key }}: {{ $value }}
+{{- end }}
